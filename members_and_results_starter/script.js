@@ -4,64 +4,26 @@ import * as members from "./members.js";
 
 window.addEventListener("load", initApp);
 
-const membersList = [];
-const resultsList = [];
-
 async function initApp() {
     initTabs();
-    await buildMembersList();
-    await buildResultsList();
-    // TODO: Make the rest of the program ...
-}
-
-async function fetchMembers() {
-    const res = await fetch("./data/members.json");
-    return await res.json();
-}
-
-async function fetchResults() {
-    const res = await fetch("./data/results.json");
-    return await res.json();
-}
-
-async function buildMembersList() {
-    const originalObjects = await fetchMembers();
-
-    for (const orgobj of originalObjects) {
-        const memberObj = members.constructMember(orgobj);
-        membersList.push(memberObj);
-    }
-}
-
-async function buildResultsList() {
-    const originalObjects = await fetchResults();
-
-    for (const orgobj of originalObjects) {
-        const resultObj = results.constructResult(orgobj);
-        resultsList.push(resultObj);
-    }
-}
-
-export function getMemberById(id) {
-    for (const member of membersList) {
-        if (member.id === id) {
-            return member;
-        }
-    }
+    await results.buildResultsList();
+    await members.buildMembersList();
+    displayResults(results.resultsList);
+    displayMembers(members.membersList);
 }
 
 // DISPLAY FUNCTIONS
-function displayMembers(members) {
+function displayMembers(listOfMembers) {
     const table = document.querySelector("table#members tbody");
     table.innerHTML = "";
-    for (const member of members) {
+    for (const member of listOfMembers) {
         const html = /*html*/ `
     <tr>
       <td>${member.name}</td>
-      <td>${member.active}</td>
+      <td>${convertActiveDisplay(member.active)}</td>
       <td>${member.birthday}</td>
       <td>${member.age}</td>
-      <td>${member.JuniorSeniorStatus}</td>
+      <td>${convertJuniorSenior(member.JuniorSeniorStatus)}</td>
       <td>${member.email}</td>
     </tr>`;
 
@@ -69,10 +31,24 @@ function displayMembers(members) {
     }
 }
 
+function convertActiveDisplay(active) {
+    if (active) {
+        return "Aktiv";
+    }
+    return "Ikke Aktiv";
+}
+
+function convertJuniorSenior(juniorSenior) {
+    if (juniorSenior) {
+        return "Senior";
+    }
+    return "Junior";
+}
+
 function displayResults(listOfResults) {
     const table = document.querySelector("#results tbody");
     table.innerHTML = "";
-    for (const result of listOfResults.sort((result1, result2) => result1.time.localeCompare(result2.time))) {
+    for (const result of listOfResults /* .sort((result1, result2) => result1.time.localeCompare(result2.time)) */) {
         const html = /*html*/ `
       <tr>
         <td>${result.date.toLocaleString("da-DK", { dateStyle: "medium" })}</td>
@@ -87,7 +63,7 @@ function displayResults(listOfResults) {
 }
 
 function convertMemberIdToName(memberId) {
-    for (const member of members) {
+    for (const member of members.membersList) {
         if (memberId === member.id) {
             return member.name;
         }

@@ -1,4 +1,4 @@
-export function constructMember(memberdata) {
+function constructMember(memberdata) {
     const MemberObject = {
         id: memberdata.id,
         _name: undefined,
@@ -35,10 +35,9 @@ export function constructMember(memberdata) {
         },
         get JuniorSeniorStatus() {
             if (this.age < 18) {
-                return "Junior";
-            } else {
-                return "Senior";
+                return false;
             }
+            return true;
         },
     };
     MemberObject.name = `${memberdata.firstName} ${memberdata.lastName}`;
@@ -49,4 +48,20 @@ export function constructMember(memberdata) {
     Object.defineProperty(MemberObject, "image", { enumerable: false });
 
     return MemberObject;
+}
+
+export const membersList = [];
+
+async function fetchMembers() {
+    const res = await fetch("./data/members.json");
+    return await res.json();
+}
+
+export async function buildMembersList() {
+    const originalObjects = await fetchMembers();
+
+    for (const orgobj of originalObjects) {
+        const memberObj = constructMember(orgobj);
+        membersList.push(memberObj);
+    }
 }
