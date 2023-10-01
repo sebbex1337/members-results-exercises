@@ -4,7 +4,7 @@ function constructResult(resultData) {
     const resultObject = {
         id: resultData.id,
         memberId: resultData.memberId,
-        _member: {},
+        _member: undefined,
         date: new Date(resultData.date),
         resultType: resultData.resultType,
         resultDiscipline: resultData.discipline,
@@ -38,12 +38,8 @@ function constructResult(resultData) {
         },
     };
     resultObject.time = resultData.time;
-    /* const member = getMemberById(resultObject.memberId);
-    console.log(member);
-    resultObject.member = member;
-    console.log(resultObject.member); */
-    // console.log(member);
-    // resultObject.name = resultObject.member.name;
+    resultObject.member = getMemberById(resultData.memberId);
+    resultObject.name = resultObject.member.name;
     Object.defineProperty(resultObject, "id", { writable: false });
 
     return resultObject;
@@ -51,7 +47,7 @@ function constructResult(resultData) {
 
 function getMemberById(id) {
     for (const member of members.membersList) {
-        if (member.id === id) {
+        if (member.id == id) {
             return member;
         }
     }
