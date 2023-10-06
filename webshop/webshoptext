@@ -1,0 +1,26 @@
+Webshop
+
+-   Tilføj product
+-   Se alle produkter
+-   total pris på alle produkter
+-   filtrer på produkt typer
+
+Product
+
+-   name, price
+-   total price of quantity
+
+Book
+
+-   author, pages
+-   show label som feks "name + "by" + author"
+
+Electronics
+
+-   brand, model
+-   show label "brand + model + product name"
+
+Clothing
+
+-   size, color
+-   show label "product name + size + color"
